@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>One Last Chance — Please Read</title>
+<style>
+  :root { --bg1:#0f172a; --bg2:#0b3a4b; --accent:#ff6b81; }
+  * { box-sizing: border-box; margin:0; padding:0 }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    color:#e6eef6;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    min-height:100vh;
+    overflow:hidden;
+  }
+  .slides { position:relative; width:100%; height:100vh; overflow:hidden; }
+  .slide {
+    position:absolute; top:0; left:100%;
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    transition: all 1s ease;
+    opacity:0;
+  }
+  .slide.active { left:0; opacity:1; }
+  .slide.prev { left:-100%; opacity:0; }
+
+  /* Floating hearts */
+  .heart-bg { position:absolute; top:0; left:0; width:100%; height:100%; overflow:hidden; z-index:0; pointer-events:none; }
+  .floating-heart {
+    position:absolute; bottom:-20px; color:#ff6b81;
+    animation: rise 8s linear infinite;
+    opacity:0.8;
+  }
+  @keyframes rise {
+    0% { transform:translateY(0) scale(0.8); opacity:0 }
+    20%{opacity:1}
+    100%{ transform:translateY(-110vh) scale(1.2); opacity:0 }
+  }
+
+  /* Intro Slide */
+  .intro { text-align:center; z-index:2; }
+  .heart-main {
+    width:120px; height:120px; background:linear-gradient(180deg,var(--accent),#ff4b6e);
+    border-radius:50%; transform:rotate(-45deg); margin:0 auto 20px;
+    animation:pulse 1.5s infinite; position:relative;
+    box-shadow:0 0 30px rgba(255,107,129,0.4);
+  }
+  .heart-main:before,.heart-main:after { content:""; position:absolute; width:120px; height:120px; border-radius:50%; background:inherit; }
+  .heart-main:before{ top:-60px } .heart-main:after{ left:60px }
+  @keyframes pulse { 0%,100%{transform:scale(1) rotate(-45deg)} 50%{transform:scale(1.1) rotate(-45deg)} }
+  .intro h1 { font-size:32px; margin-bottom:12px }
+  .intro p { font-size:18px; margin-bottom:20px }
+  .btn { padding:12px 22px; border-radius:10px; border:none; cursor:pointer; font-weight:600;
+         background:linear-gradient(90deg,var(--accent),#ff4b6e); color:white;
+         box-shadow:0 8px 20px rgba(255,107,129,0.3); }
+
+  /* Slide 2 */
+  .wrap { width:100%; max-width:920px; background:rgba(255,255,255,0.05); border-radius:18px;
+          padding:28px; box-shadow:0 10px 30px rgba(2,6,23,0.6); position:relative; overflow:hidden; }
+  .content { display:grid; grid-template-columns:1fr 380px; gap:18px; }
+  .card { background:rgba(255,255,255,0.02); padding:18px; border-radius:12px; }
+  input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
+    background:transparent;color:#fff;margin-bottom:12px;font-size:15px;}
+  textarea{min-height:120px;resize:vertical;}
+  .controls{display:flex;gap:8px;margin-top:12px;}
+  .btn-ghost{background:transparent;color:#cfe6ff;border:1px solid rgba(255,255,255,0.2);}
+  .preview{padding:18px;border-radius:12px;background:rgba(255,255,255,0.02);min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;}
+  .letter{max-width:520px;padding:18px;border-radius:12px;background:rgba(255,255,255,0.03);box-shadow:0 6px 20px rgba(2,6,23,0.5);}
+  .typed{font-size:16px;line-height:1.5;color:#fff;min-height:100px;}
+  #confetti{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+  /* Promises timeline */
+  .timeline{margin-top:16px;text-align:left;}
+  .promise{opacity:0;transform:translateY(20px);transition:all 0.6s;}
+  .promise.show{opacity:1;transform:translateY(0);}
+  .promise::before{content:"❤";margin-right:8px;color:#ff6b81;}
+  /* Music btn */
+  #musicBtn{position:absolute;top:20px;right:20px;z-index:10;background:#fff1;padding:8px 14px;border-radius:8px;color:#fff;border:none;cursor:pointer;}
+  @media(max-width:880px){.content{grid-template-columns:1fr}.preview{order:-1}}
+</style>
+</head>
+<body>
+<div class="slides">
+  <!-- Slide 1 -->
+  <div class="slide active" id="slide1">
+    <div class="heart-bg" id="heartBg"></div>
+    <div class="intro">
+      <div class="heart-main"></div>
+      <h1>One Last Chance</h1>
+      <p>I want to show how much you mean to me.</p>
+      <button class="btn" id="nextBtn">Next →</button>
+    </div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide" id="slide2">
+    <div class="wrap">
+      <button id="musicBtn">🎵 Play Music</button>
+      <canvas id="confetti"></canvas>
+      <div class="content">
+        <div class="card">
+          <label for="to">To</label>
+          <input id="to" value="Buyandelger" />
+          <label for="from">From</label>
+          <input id="from" value="Bilguun" />
+          <label for="message">Message</label>
+          <textarea id="message">I messed up and I am so sorry. I miss you and I understand if you need time, but I want you to know I love you and I'm committed to being better. Please give me one last chance to make things right.</textarea>
+          <div class="controls">
+            <button class="btn" id="send">Send & Show Magic</button>
+            <button class="btn-ghost" id="reset">Reset</button>
+            <button class="btn-ghost" id="copy">Copy</button>
+          </div>
+        </div>
+        <aside class="preview card">
+          <div class="letter" id="letter">
+            <div class="typed" id="typedPreview">I messed up and I am so sorry...</div>
+            <div class="timeline" id="timeline">
+              <div class="promise">I will listen to you deeply.</div>
+              <div class="promise">I will be more patient & kind.</div>
+              <div class="promise">I will grow with you every day.</div>
+              <div class="promise">I will celebrate our love always.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Audio -->
+<audio id="bgMusic" loop>
+  <source src="it-will-rain.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // Slide switching
+  const nextBtn=document.getElementById('nextBtn');
+  const slide1=document.getElementById('slide1');
+  const slide2=document.getElementById('slide2');
+  nextBtn.addEventListener('click',()=>{
+    slide1.classList.remove('active'); slide1.classList.add('prev');
+    slide2.classList.add('active');
+  });
+
+  // Floating hearts
+  const heartBg=document.getElementById('heartBg');
+  function createHeart(){
+    const h=document.createElement('div');
+    h.className='floating-heart'; h.textContent='❤';
+    h.style.left=Math.random()*100+'vw';
+    h.style.fontSize=(14+Math.random()*18)+'px';
+    h.style.animationDuration=(6+Math.random()*4)+'s';
+    heartBg.appendChild(h);
+    setTimeout(()=>h.remove(),10000);
+  }
+  setInterval(createHeart,600);
+
+  // Music controls
+  const music=document.getElementById('bgMusic');
+  const musicBtn=document.getElementById('musicBtn');
+  musicBtn.addEventListener('click',()=>{
+    if(music.paused){ music.play(); musicBtn.textContent='⏸ Pause Music'; }
+    else { music.pause(); musicBtn.textContent='🎵 Play Music'; }
+  });
+
+  // Slide 2 elements
+  const to=document.getElementById('to');
+  const from=document.getElementById('from');
+  const message=document.getElementById('message');
+  const typedPreview=document.getElementById('typedPreview');
+  const sendBtn=document.getElementById('send');
+  const resetBtn=document.getElementById('reset');
+  const copyBtn=document.getElementById('copy');
+  const timeline=document.getElementById('timeline').children;
+  const confettiCanvas=document.getElementById('confetti');
+  const ctx=confettiCanvas.getContext('2d');
+
+  function resizeCanvas(){ confettiCanvas.width=confettiCanvas.offsetWidth; confettiCanvas.height=confettiCanvas.offsetHeight; }
+  window.addEventListener('resize',resizeCanvas); resizeCanvas();
+
+  function typeText(el,text){
+    el.textContent=''; let i=0;
+    const id=setInterval(()=>{ el.textContent+=text[i]||''; i++; if(i>text.length) clearInterval(id); },20);
+  }
+
+  // Confetti
+  let confettiParticles=[];
+  function makeConfetti(){
+    confettiParticles=[];
+    for(let i=0;i<80;i++){
+      confettiParticles.push({x:Math.random()*confettiCanvas.width,y:-Math.random()*confettiCanvas.height,
+        vx:(Math.random()-0.5)*2,vy:Math.random()*3+1,r:Math.random()*6+2,rot:Math.random()*360,
+        vr:(Math.random()-0.5)*10,life:Math.random()*90+60});
+    }
+    runConfetti();
+  }
+  let confettiAnim;
+  function runConfetti(){
+    cancelAnimationFrame(confettiAnim);
+    function frame(){
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiParticles.forEach((p)=>{
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=`hsl(${(p.x+p.y)%360} 80% 60%)`;
+        ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+        ctx.restore(); p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr*0.1; p.life--;
+      });
+      confettiParticles=confettiParticles.filter(p=>p.life>0 && p.y<confettiCanvas.height+50);
+      if(confettiParticles.length>0) confettiAnim=requestAnimationFrame(frame);
+    }
+    frame();
+  }
+
+  // Send button
+  sendBtn.addEventListener('click',()=>{
+    const text=message.value.trim();
+    if(!text){ alert('Write something from the heart first.'); return; }
+    typeText(typedPreview,text); makeConfetti();
+    // Show promises one by one
+    [...timeline].forEach((el,i)=>{ setTimeout(()=>el.classList.add('show'),800+i*800); });
+  });
+  resetBtn.addEventListener('click',()=>{
+    to.value='Buyandelger'; from.value='Bilguun';
+    message.value='I messed up and I am so sorry...';
+    typedPreview.textContent=message.value;
+    [...timeline].forEach(el=>el.classList.remove('show'));
+  });
+  copyBtn.addEventListener('click',async()=>{
+    try{
+      await navigator.clipboard.writeText(`${to.value? 'To: '+to.value+'\n':''}${message.value}\n${from.value? '\n— '+from.value:''}`);
+      copyBtn.textContent='Copied!'; setTimeout(()=>copyBtn.textContent='Copy',1400);
+    }catch{ alert('Could not copy automatically.'); }
+  });
+</script>
+</body>
+</html>
